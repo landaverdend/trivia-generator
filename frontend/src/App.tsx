@@ -1,5 +1,9 @@
-
+import FormContainer from './components/formContainer/FormContainer';
 
 export default function App() {
-  return <div>Hello world!</div>;
+  return (
+    <div>
+      <FormContainer />
+    </div>
+  );
 }

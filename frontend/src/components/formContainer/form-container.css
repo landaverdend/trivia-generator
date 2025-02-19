@@ -1,5 +1,46 @@
+.page-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 
+  gap: 25px;
+
+  font-family: Arial, Helvetica, sans-serif;
+}
 
 .form-container {
-  color: red;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.card-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+
+  width: 25vw;
+
+  font-size: xx-large;
+  background-color: rgb(233, 217, 248);
+  border-top: 1px solid black;
+  border-bottom: 1px solid black;
+
+  position: relative;
+
+  input {
+    height: 100%;
+  }
+
+  .action {
+    font-size: 3rem;
+  }
+
+  .action:hover {
+    cursor: pointer;
+    opacity: 0.5;
+  }
 }

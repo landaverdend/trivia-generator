@@ -1,7 +1,7 @@
 export type PostBody = {
   numQuestions: number;
   triviaRounds: number;
-  categories: Set<string>;
+  categories: Array<string>;
   shouldIncludeSources?: boolean;
 };
 

@@ -1,10 +1,14 @@
 import { useEffect, useState } from 'react';
 import './form-container.css';
+import { generateTrivia } from '../../api/api';
+import { TriviaResponse } from '../../types/api';
 
 export default function FormContainer() {
   const [rounds, setRounds] = useState(1);
   const [questionsPerRound, setQuestionsPerRound] = useState(10);
   const [topics, setTopics] = useState(['']);
+  const [result, setResult] = useState<TriviaResponse>({ rounds: [] });
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const MinusButton = ({ topic }: { topic: string }) => {
     return (
@@ -78,7 +82,25 @@ export default function FormContainer() {
       <span>
         <input type="checkbox" /> Include sources on trivia
       </span>
-      <button>Generate Trivia!</button>
+      <button
+        onClick={() => {
+          if (!isLoading) {
+            const validTopics = topics.filter((topic) => topic.trim() !== '');
+
+            generateTrivia({ numQuestions: questionsPerRound, triviaRounds: rounds, categories: validTopics })
+              .then((res) => {
+                setResult(res);
+              })
+              .catch(() => {
+                alert('There was an error generating trivia.');
+              })
+              .finally(() => {
+                setIsLoading(false);
+              });
+          }
+        }}>
+        Generate Trivia!
+      </button>
 
       {/* Generate the output here*/}
       <div></div>

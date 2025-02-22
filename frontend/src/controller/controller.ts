@@ -4,6 +4,7 @@ import { TriviaResponse, PostBody, ErrorResponse } from '../types/api';
 import OpenAI from 'openai';
 import dotenv from 'dotenv';
 import { prompt } from './prompt';
+import cors from 'cors';
 
 // Load environment variables from .env file
 dotenv.config();
@@ -16,6 +17,8 @@ const port = 3000;
 const app = express();
 
 app.use(express.json());
+app.use(cors());
+app.options('*', cors()); // Enable pre-flight for all requests
 
 app.post('/api/generateTrivia', async (req: Request<{}, {}, PostBody>, res: Response<TriviaResponse | ErrorResponse>) => {
   const { categories, numQuestions, triviaRounds } = req.body;
@@ -28,8 +31,7 @@ app.post('/api/generateTrivia', async (req: Request<{}, {}, PostBody>, res: Resp
     res.status(400).json({ error: 'Missing field: triviaRounds or numQuestions' });
   }
 
-  const categoryList = new Array(categories);
-
+  const categoryList = Array.from(categories);
   const thePrompt = prompt
     .replace('{triviaRounds}', triviaRounds.toString())
     .replace('{numQuestions}', numQuestions.toString())
@@ -50,7 +52,7 @@ app.post('/api/generateTrivia', async (req: Request<{}, {}, PostBody>, res: Resp
   const response = await client.chat.completions.create(params);
   const message = response.choices[0].message.content as string;
   const ret = JSON.parse(message.replace(/^```json\n/, '').replace(/\n```$/, '') as string);
-  
+
   res.status(200).json(ret as TriviaResponse);
 });
 

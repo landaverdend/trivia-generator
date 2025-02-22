@@ -80,7 +80,7 @@ export default function FormContainer() {
       </span>
       <button>Generate Trivia!</button>
 
-      {/* Genearate the output here*/}
+      {/* Generate the output here*/}
       <div></div>
     </div>
   );

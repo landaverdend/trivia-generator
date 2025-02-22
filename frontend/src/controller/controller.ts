@@ -3,6 +3,7 @@ import { Request, Response } from 'express';
 import { TriviaResponse, PostBody, ErrorResponse } from '../types/api';
 import OpenAI from 'openai';
 import dotenv from 'dotenv';
+import { prompt } from './prompt';
 
 // Load environment variables from .env file
 dotenv.config();
@@ -17,27 +18,40 @@ const app = express();
 app.use(express.json());
 
 app.post('/api/generateTrivia', async (req: Request<{}, {}, PostBody>, res: Response<TriviaResponse | ErrorResponse>) => {
-  if (!req.body.categories || req.body.categories.size == 0) {
+  const { categories, numQuestions, triviaRounds } = req.body;
+
+  if (!categories || categories.size == 0) {
     res.status(400).json({ error: 'Missing field: category' });
   }
 
-  if (!req.body.triviaRounds || !req.body.numQuestions) {
+  if (!triviaRounds || !numQuestions) {
     res.status(400).json({ error: 'Missing field: triviaRounds or numQuestions' });
   }
+
+  const categoryList = new Array(categories);
+
+  const thePrompt = prompt
+    .replace('{triviaRounds}', triviaRounds.toString())
+    .replace('{numQuestions}', numQuestions.toString())
+    .replace('{categories}', categoryList.join(', '));
+
+  console.log(thePrompt);
 
   const params: OpenAI.Chat.ChatCompletionCreateParams = {
     messages: [
       {
         role: 'user',
-        content: 'Please give me a random trivia questio about south america, alongside a source url for the factoid.',
+        content: thePrompt,
       },
     ],
     model: 'gpt-4o',
   };
 
-  await client.chat.completions.create(params);
-
-  res.status(200).json({ question: 'fasdf', answer: 'asdf', source: 'am one' });
+  const response = await client.chat.completions.create(params);
+  const message = response.choices[0].message.content as string;
+  const ret = JSON.parse(message.replace(/^```json\n/, '').replace(/\n```$/, '') as string);
+  
+  res.status(200).json(ret as TriviaResponse);
 });
 
 app.listen(port, () => {

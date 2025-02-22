@@ -9,8 +9,12 @@ export type ErrorResponse = {
   error: string;
 };
 
-export type TriviaResponse = {
+export type TriviaQuestion = {
   question: string;
   answer: string;
   source?: string;
+};
+
+export type TriviaResponse = {
+  rounds: Array<Array<TriviaQuestion>>;
 };

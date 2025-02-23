@@ -3,6 +3,15 @@ import './form-container.css';
 import { generateTrivia } from '../../api/api';
 import { Difficulty, TriviaQuestion, TriviaResponse } from '../../types/api';
 
+type LSProps = {
+  color?: string;
+};
+function LoadSpinner({ color }: LSProps) {
+  const colorToUse = color ? color : '#1a73e8';
+
+  return <span className="load-spinner" style={{ borderTopColor: colorToUse, borderRightColor: colorToUse }}></span>;
+}
+
 type Category = {
   topic: string;
   difficulties: Record<Difficulty, number>;
@@ -127,18 +136,21 @@ export default function FormContainer() {
     if (isLoading) return;
 
     setIsLoading(true);
-    try {
-      const response = await generateTrivia({
-        numQuestions: questionsPerRound,
-        triviaRounds: rounds,
-        categories,
-      });
-      setResult(response);
-    } catch (error) {
-      alert('There was an error generating trivia.');
-    } finally {
+    setTimeout(() => {
       setIsLoading(false);
-    }
+    }, 10000);
+    // try {
+    //   const response = await generateTrivia({
+    //     numQuestions: questionsPerRound,
+    //     triviaRounds: rounds,
+    //     categories,
+    //   });
+    //   setResult(response);
+    // } catch (error) {
+    //   alert('There was an error generating trivia.');
+    // } finally {
+    //   setIsLoading(false);
+    // }
   };
 
   return (
@@ -172,11 +184,11 @@ export default function FormContainer() {
         ))}
       </div>
 
-      <button onClick={handleGenerateTrivia} disabled={isLoading}>
+      <button onClick={handleGenerateTrivia} disabled={isLoading} className="generate-button">
         Generate Trivia!
       </button>
 
-      {isLoading && <div>Loading...</div>}
+      {isLoading && <LoadSpinner />}
 
       <div className="trivia-output-container">
         {result.rounds.map((round, i) => (

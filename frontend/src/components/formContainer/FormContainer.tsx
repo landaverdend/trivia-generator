@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import './form-container.css';
-import { Difficulty, TriviaQuestion, TriviaResponse } from '../../types/api';
+import { Difficulty, TriviaResponse } from '../../types/api';
 import { generateTrivia } from '../../api/api';
+import OutputTable from '../outputTable/OutputTable';
 
 type LSProps = {
   color?: string;
@@ -16,16 +17,6 @@ type Category = {
   topic: string;
   difficulties: Record<Difficulty, number>;
 };
-
-function TriviaQuestionCard({ question }: { question: TriviaQuestion }) {
-  return (
-    <div className={`trivia-question-container ${question.difficulty}`}>
-      <div>{question.question}</div>
-      <div>{question.answer}</div>
-      <div>{question.difficulty}</div>
-    </div>
-  );
-}
 
 function DifficultyInput({
   label,
@@ -169,16 +160,7 @@ export default function FormContainer() {
       </button>
 
       {isLoading && <LoadSpinner />}
-
-      <div className="trivia-output-container">
-        {result.rounds.map((round, i) => (
-          <div key={i} className="trivia-round-container">
-            {round.map((question) => (
-              <TriviaQuestionCard key={question.question} question={question} />
-            ))}
-          </div>
-        ))}
-      </div>
+      {result.rounds.length > 0 && <OutputTable result={result} />}
     </div>
   );
 }

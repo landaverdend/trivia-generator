@@ -44,3 +44,17 @@
     opacity: 0.5;
   }
 }
+
+.trivia-round-container {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+
+  max-width: 80%;
+}
+
+.trivia-question-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}

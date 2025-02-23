@@ -1,7 +1,16 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import './form-container.css';
 import { generateTrivia } from '../../api/api';
-import { TriviaResponse } from '../../types/api';
+import { TriviaQuestion, TriviaResponse } from '../../types/api';
+
+function TriviaQuestionCard({ question }: { question: TriviaQuestion }) {
+  return (
+    <div className="trivia-question-container">
+      <div>{question.question}</div>
+      <div>{question.answer}</div>
+    </div>
+  );
+}
 
 export default function FormContainer() {
   const [rounds, setRounds] = useState(1);
@@ -103,7 +112,17 @@ export default function FormContainer() {
       </button>
 
       {/* Generate the output here*/}
-      <div></div>
+      <div className="trivia-output-container">
+        {result.rounds.map((round) => {
+          return (
+            <div className="trivia-round-container">
+              {round.map((question) => (
+                <TriviaQuestionCard key={question.question} question={question} />
+              ))}
+            </div>
+          );
+        })}
+      </div>
     </div>
   );
 }

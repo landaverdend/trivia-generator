@@ -23,7 +23,7 @@ app.options('*', cors()); // Enable pre-flight for all requests
 app.post('/api/generateTrivia', async (req: Request<{}, {}, PostBody>, res: Response<TriviaResponse | ErrorResponse>) => {
   const { categories, numQuestions, triviaRounds } = req.body;
 
-  if (!categories || categories.size == 0) {
+  if (!categories || categories.length === 0) {
     res.status(400).json({ error: 'Missing field: category' });
   }
 

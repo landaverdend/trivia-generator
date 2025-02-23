@@ -1,9 +1,9 @@
 import express from 'express';
 import { Request, Response } from 'express';
-import { TriviaResponse, PostBody, ErrorResponse } from '../types/api';
+import { TriviaResponse, PostBody, ErrorResponse, Category } from '../types/api';
 import OpenAI from 'openai';
 import dotenv from 'dotenv';
-import { prompt } from './prompt';
+import { PROMPT_1 } from './prompt';
 import cors from 'cors';
 
 // Load environment variables from .env file
@@ -20,6 +20,11 @@ app.use(express.json());
 app.use(cors());
 app.options('*', cors()); // Enable pre-flight for all requests
 
+function serializeCategory(category: Category): string {
+  const { easy, medium, hard } = category.difficulties;
+  return `{The topic of ${category.topic} should have ${easy} easy, ${medium} medium, and ${hard} hard questions}`;
+}
+
 app.post('/api/generateTrivia', async (req: Request<{}, {}, PostBody>, res: Response<TriviaResponse | ErrorResponse>) => {
   const { categories, numQuestions, triviaRounds } = req.body;
 
@@ -31,12 +36,17 @@ app.post('/api/generateTrivia', async (req: Request<{}, {}, PostBody>, res: Resp
     res.status(400).json({ error: 'Missing field: triviaRounds or numQuestions' });
   }
 
-  const categoryList = Array.from(categories);
-  const thePrompt = prompt
-    .replace('{triviaRounds}', triviaRounds.toString())
-    .replace('{numQuestions}', numQuestions.toString())
-    .replace('{categories}', categoryList.join(', '));
+  const categoriesPrompt =
+    '[' +
+    categories.map((category, i) => {
+      return serializeCategory(category) + (i === categories.length ? ', ' : '');
+    }) +
+    ']';
+  console.log(categories);
 
+  const thePrompt = PROMPT_1.replace('{triviaRounds}', triviaRounds.toString())
+    .replace('{numQuestions}', numQuestions.toString())
+    .replace('{categories}', categoriesPrompt);
   console.log(thePrompt);
 
   const params: OpenAI.Chat.ChatCompletionCreateParams = {

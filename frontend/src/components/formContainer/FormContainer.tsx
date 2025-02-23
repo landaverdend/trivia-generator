@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import './form-container.css';
-import { generateTrivia } from '../../api/api';
 import { Difficulty, TriviaQuestion, TriviaResponse } from '../../types/api';
+import { generateTrivia } from '../../api/api';
 
 type LSProps = {
   color?: string;
@@ -22,6 +22,7 @@ function TriviaQuestionCard({ question }: { question: TriviaQuestion }) {
     <div className={`trivia-question-container ${question.difficulty}`}>
       <div>{question.question}</div>
       <div>{question.answer}</div>
+      <div>{question.difficulty}</div>
     </div>
   );
 }
@@ -136,21 +137,19 @@ export default function FormContainer() {
     if (isLoading) return;
 
     setIsLoading(true);
-    setTimeout(() => {
+
+    try {
+      const response = await generateTrivia({
+        numQuestions: questionsPerRound,
+        triviaRounds: rounds,
+        categories,
+      });
+      setResult(response);
+    } catch (error) {
+      alert('There was an error generating trivia.');
+    } finally {
       setIsLoading(false);
-    }, 10000);
-    // try {
-    //   const response = await generateTrivia({
-    //     numQuestions: questionsPerRound,
-    //     triviaRounds: rounds,
-    //     categories,
-    //   });
-    //   setResult(response);
-    // } catch (error) {
-    //   alert('There was an error generating trivia.');
-    // } finally {
-    //   setIsLoading(false);
-    // }
+    }
   };
 
   return (

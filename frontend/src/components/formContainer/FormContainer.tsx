@@ -1,13 +1,87 @@
 import { useState } from 'react';
 import './form-container.css';
 import { generateTrivia } from '../../api/api';
-import { TriviaQuestion, TriviaResponse } from '../../types/api';
+import { Difficulty, TriviaQuestion, TriviaResponse } from '../../types/api';
+
+type Category = {
+  topic: string;
+  difficulties: Record<Difficulty, number>;
+};
 
 function TriviaQuestionCard({ question }: { question: TriviaQuestion }) {
   return (
-    <div className="trivia-question-container">
+    <div className={`trivia-question-container ${question.difficulty}`}>
       <div>{question.question}</div>
       <div>{question.answer}</div>
+    </div>
+  );
+}
+
+function DifficultyInput({
+  label,
+  value,
+  max,
+  onChange,
+}: {
+  label: string;
+  value: number;
+  max: number;
+  onChange: (value: number) => void;
+}) {
+  return (
+    <span>
+      <input type="number" min="0" max={max} value={value} onChange={(e) => onChange(Number(e.target.value))} /> <b>{label}</b>{' '}
+      questions
+    </span>
+  );
+}
+
+function CategoryCard({
+  index,
+  questionsPerRound,
+  onRemove,
+  onAdd,
+  category,
+  onChange,
+  isLast,
+}: {
+  index: number;
+  questionsPerRound: number;
+  onRemove: () => void;
+  onAdd: () => void;
+  category: Category;
+  onChange: (category: Category) => void;
+  isLast: boolean;
+}) {
+  const updateDifficulty = (difficulty: Difficulty, count: number) => {
+    onChange({
+      ...category,
+      difficulties: { ...category.difficulties, [difficulty]: count },
+    });
+  };
+
+  return (
+    <div className="card-container">
+      <input
+        value={category.topic}
+        placeholder={`Category ${index + 1}`}
+        type="text"
+        onChange={(e) => onChange({ ...category, topic: e.target.value })}
+      />
+      <div className="difficulty-selector-container">
+        {(['easy', 'medium', 'hard'] as Difficulty[]).map((difficulty) => (
+          <DifficultyInput
+            key={difficulty}
+            label={difficulty}
+            value={category.difficulties[difficulty]}
+            max={questionsPerRound}
+            onChange={(value) => updateDifficulty(difficulty, value)}
+          />
+        ))}
+      </div>
+      <span className="action" onClick={isLast ? onAdd : onRemove}>
+        {isLast ? '+' : '-'}
+      </span>
     </div>
   );
 }
@@ -15,113 +89,103 @@ function TriviaQuestionCard({ question }: { question: TriviaQuestion }) {
 export default function FormContainer() {
   const [rounds, setRounds] = useState(1);
   const [questionsPerRound, setQuestionsPerRound] = useState(10);
-  const [topics, setTopics] = useState(['']);
+  const [categories, setCategories] = useState<Category[]>([
+    {
+      topic: '',
+      difficulties: { easy: 0, medium: 0, hard: 0 },
+    },
+  ]);
   const [result, setResult] = useState<TriviaResponse>({ rounds: [] });
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState(false);
 
-  const MinusButton = ({ topic }: { topic: string }) => {
-    return (
-      <span
-        className="action"
-        onClick={() => {
-          setTopics((prev) => {
-            const res = prev.filter((el) => el !== topic);
-            if (res.length === 0) res.push('');
-
-            return res;
-          });
-        }}>
-        -
-      </span>
-    );
+  const handleCategoryChange = (index: number, category: Category) => {
+    setCategories((prev) => {
+      const newCategories = [...prev];
+      newCategories[index] = category;
+      return newCategories;
+    });
   };
 
-  const PlusButton = () => {
-    return (
-      <span
-        className="action"
-        onClick={() => {
-          setTopics((prev) => {
-            return [...prev, ''];
-          });
-        }}>
-        +
-      </span>
-    );
+  const addCategory = () => {
+    setCategories((prev) => [
+      ...prev,
+      {
+        topic: '',
+        difficulties: { easy: 0, medium: 0, hard: 0 },
+      },
+    ]);
+  };
+
+  const removeCategory = (index: number) => {
+    setCategories((prev) => {
+      const newCategories = prev.filter((_, i) => i !== index);
+      return newCategories.length === 0 ? [{ topic: '', difficulties: { easy: 0, medium: 0, hard: 0 } }] : newCategories;
+    });
+  };
+
+  const handleGenerateTrivia = async () => {
+    if (isLoading) return;
+
+    setIsLoading(true);
+    try {
+      const response = await generateTrivia({
+        numQuestions: questionsPerRound,
+        triviaRounds: rounds,
+        categories,
+      });
+      setResult(response);
+    } catch (error) {
+      alert('There was an error generating trivia.');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
     <div className="page-container">
-      <h2>Trivia Generator</h2>
-      <div>
-        Each round of trivia will have:{' '}
-        <input
-          type="number"
-          min="1"
-          value={questionsPerRound}
-          onChange={(e) => {
-            setQuestionsPerRound(Number.parseInt(e.target.value));
-          }}
-        />
-        questions
-      </div>
-      <div>
-        I need <input type="number" min="1" value={rounds} onChange={(e) => setRounds(Number.parseInt(e.target.value))} /> rounds
-        of trivia questions for the following categories:
+      <h1>Trivia Generator</h1>
+
+      <div className="initial-form-container">
+        <span>
+          Each round of trivia will have:{' '}
+          <input type="number" min="1" value={questionsPerRound} onChange={(e) => setQuestionsPerRound(Number(e.target.value))} />{' '}
+          questions
+        </span>
+        <span>
+          I need <input type="number" min="1" value={rounds} onChange={(e) => setRounds(Number(e.target.value))} /> rounds of
+          trivia questions for the following categories:
+        </span>
       </div>
 
       <div className="form-container">
-        {topics.map((topic, i) => (
-          <div className="card-container" key={i}>
-            <input
-              value={topic}
-              placeholder={`Category ${i + 1}`}
-              type="text"
-              onChange={(e) => {
-                const ref = [...topics];
-                ref[i] = e.target.value;
-                setTopics(ref);
-              }}
-            />
-            {i === topics.length - 1 ? <PlusButton /> : <MinusButton topic={topic} />}
-          </div>
+        {categories.map((category, i) => (
+          <CategoryCard
+            key={i}
+            index={i}
+            questionsPerRound={questionsPerRound}
+            category={category}
+            onChange={(category) => handleCategoryChange(i, category)}
+            onRemove={() => removeCategory(i)}
+            onAdd={addCategory}
+            isLast={i === categories.length - 1}
+          />
         ))}
       </div>
 
-      <span>
-        <input type="checkbox" /> Include sources on trivia
-      </span>
-      <button
-        onClick={() => {
-          if (!isLoading) {
-            const validTopics = topics.filter((topic) => topic.trim() !== '');
-
-            generateTrivia({ numQuestions: questionsPerRound, triviaRounds: rounds, categories: validTopics })
-              .then((res) => {
-                setResult(res);
-              })
-              .catch(() => {
-                alert('There was an error generating trivia.');
-              })
-              .finally(() => {
-                setIsLoading(false);
-              });
-          }
-        }}>
+      <button onClick={handleGenerateTrivia} disabled={isLoading}>
         Generate Trivia!
       </button>
 
-      {/* Generate the output here*/}
+      {isLoading && <div>Loading...</div>}
+
       <div className="trivia-output-container">
-        {result.rounds.map((round) => {
-          return (
-            <div className="trivia-round-container">
-              {round.map((question) => (
-                <TriviaQuestionCard key={question.question} question={question} />
-              ))}
-            </div>
-          );
-        })}
+        {result.rounds.map((round, i) => (
+          <div key={i} className="trivia-round-container">
+            {round.map((question) => (
+              <TriviaQuestionCard key={question.question} question={question} />
+            ))}
+          </div>
+        ))}
       </div>
     </div>
   );

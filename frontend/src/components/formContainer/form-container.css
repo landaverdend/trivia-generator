@@ -16,27 +16,37 @@
   justify-content: center;
 }
 
+.initial-form-container {
+  display: flex;
+  flex-direction: column;
+  gap: 35px;
+
+  font-size: clamp(1rem, 2vw, 1.5rem);
+}
+
 .card-container {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
-
-  width: 25vw;
+  gap: 20px;
+  padding: 10px;
 
   font-size: xx-large;
-  background-color: rgb(233, 217, 248);
+  background-color: rgb(164, 163, 233);
   border-top: 1px solid black;
   border-bottom: 1px solid black;
 
   position: relative;
 
   input {
-    height: 100%;
+    height: clamp(20px, 3vh, 50px);
+    border: 1px solid white;
+    border-radius: 5px;
   }
 
   .action {
-    font-size: 3rem;
+    font-size: 2.5rem;
   }
 
   .action:hover {
@@ -57,4 +67,19 @@
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+}
+
+.difficulty-selector-container {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  font-size: clamp(0.7rem, 2vw, 1rem);
+  gap: 15px;
+
+  input {
+    height: 100%;
+
+    border: 1px solid white;
+    border-radius: 5px;
+  }
 }

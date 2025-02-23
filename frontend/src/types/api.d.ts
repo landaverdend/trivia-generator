@@ -1,8 +1,5 @@
 export type PostBody = {
-  numQuestions: number;
-  triviaRounds: number;
   categories: Array<Category>;
-  shouldIncludeSources?: boolean;
 };
 
 export type ErrorResponse = {

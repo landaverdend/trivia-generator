@@ -26,14 +26,10 @@ function serializeCategory(category: Category): string {
 }
 
 app.post('/api/generateTrivia', async (req: Request<{}, {}, PostBody>, res: Response<TriviaResponse | ErrorResponse>) => {
-  const { categories, numQuestions, triviaRounds } = req.body;
+  const { categories } = req.body;
 
   if (!categories || categories.length === 0) {
     res.status(400).json({ error: 'Missing field: category' });
-  }
-
-  if (!triviaRounds || !numQuestions) {
-    res.status(400).json({ error: 'Missing field: triviaRounds or numQuestions' });
   }
 
   const categoriesPrompt =
@@ -44,10 +40,7 @@ app.post('/api/generateTrivia', async (req: Request<{}, {}, PostBody>, res: Resp
     ']';
   console.log(categories);
 
-  const thePrompt = PROMPT_1.replace('{triviaRounds}', triviaRounds.toString())
-    .replace('{numQuestions}', numQuestions.toString())
-    .replace('{categories}', categoriesPrompt);
-  console.log(thePrompt);
+  const thePrompt = PROMPT_1.replace('{categories}', categoriesPrompt);
 
   const params: OpenAI.Chat.ChatCompletionCreateParams = {
     messages: [

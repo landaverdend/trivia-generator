@@ -48,7 +48,6 @@ function DifficultyInput({
 
 function CategoryCard({
   index,
-  questionsPerRound,
   onRemove,
   onAdd,
   category,
@@ -56,7 +55,6 @@ function CategoryCard({
   isLast,
 }: {
   index: number;
-  questionsPerRound: number;
   onRemove: () => void;
   onAdd: () => void;
   category: Category;
@@ -84,7 +82,7 @@ function CategoryCard({
             key={difficulty}
             label={difficulty}
             value={category.difficulties[difficulty]}
-            max={questionsPerRound}
+            max={20}
             onChange={(value) => updateDifficulty(difficulty, value)}
           />
         ))}
@@ -97,8 +95,6 @@ function CategoryCard({
 }
 
 export default function FormContainer() {
-  const [rounds, setRounds] = useState(1);
-  const [questionsPerRound, setQuestionsPerRound] = useState(10);
   const [categories, setCategories] = useState<Category[]>([
     {
       topic: '',
@@ -140,8 +136,6 @@ export default function FormContainer() {
 
     try {
       const response = await generateTrivia({
-        numQuestions: questionsPerRound,
-        triviaRounds: rounds,
         categories,
       });
       setResult(response);
@@ -156,24 +150,11 @@ export default function FormContainer() {
     <div className="page-container">
       <h1>Trivia Generator</h1>
 
-      <div className="initial-form-container">
-        <span>
-          Each round of trivia will have:{' '}
-          <input type="number" min="1" value={questionsPerRound} onChange={(e) => setQuestionsPerRound(Number(e.target.value))} />{' '}
-          questions
-        </span>
-        <span>
-          I need <input type="number" min="1" value={rounds} onChange={(e) => setRounds(Number(e.target.value))} /> rounds of
-          trivia questions for the following categories:
-        </span>
-      </div>
-
       <div className="form-container">
         {categories.map((category, i) => (
           <CategoryCard
             key={i}
             index={i}
-            questionsPerRound={questionsPerRound}
             category={category}
             onChange={(category) => handleCategoryChange(i, category)}
             onRemove={() => removeCategory(i)}

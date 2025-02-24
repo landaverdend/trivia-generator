@@ -1,9 +1,7 @@
-import React from 'react';
-import { TriviaResponse } from '../../types/api';
+import { TriviaQuestion, TriviaResponse } from '../../types/api';
 
-type OTProps = { result: TriviaResponse };
-
-export default function OutputTable({ result }: OTProps) {
+type OTProps = { round: TriviaQuestion[] };
+function OutputTable({ round }: OTProps) {
   return (
     <div className="trivia-output-table">
       <table>
@@ -15,19 +13,27 @@ export default function OutputTable({ result }: OTProps) {
           </tr>
         </thead>
         <tbody>
-          {result.rounds.map((round, roundIndex) => (
-            <React.Fragment key={roundIndex}>
-              {round.map((question) => (
-                <tr key={question.question} className={question.difficulty}>
-                  <td>{question.question}</td>
-                  <td>{question.answer}</td>
-                  <td>{question.difficulty}</td>
-                </tr>
-              ))}
-            </React.Fragment>
+          {round.map((question) => (
+            <tr key={question.question} className={question.difficulty}>
+              <td>{question.question}</td>
+              <td>{question.answer}</td>
+              <td>{question.difficulty}</td>
+            </tr>
           ))}
         </tbody>
       </table>
+    </div>
+  );
+}
+
+type OCProps = { result: TriviaResponse };
+export function OutputContainer({ result }: OCProps) {
+  const { rounds } = result;
+  return (
+    <div>
+      {rounds.map((round) => (
+        <OutputTable round={round} />
+      ))}
     </div>
   );
 }

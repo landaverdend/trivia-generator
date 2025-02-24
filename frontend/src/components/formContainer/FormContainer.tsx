@@ -2,7 +2,7 @@ import { useState } from 'react';
 import './form-container.css';
 import { Difficulty, TriviaResponse } from '../../types/api';
 import { generateTrivia } from '../../api/api';
-import OutputTable from '../outputTable/OutputTable';
+import { OutputContainer } from '../outputTable/OutputTable';
 
 type LSProps = {
   color?: string;
@@ -160,7 +160,7 @@ export default function FormContainer() {
       </button>
 
       {isLoading && <LoadSpinner />}
-      {result.rounds.length > 0 && <OutputTable result={result} />}
+      {result.rounds.length > 0 && <OutputContainer result={result} />}
     </div>
   );
 }

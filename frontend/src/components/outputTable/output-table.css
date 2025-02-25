@@ -1,3 +1,45 @@
+.output-container {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
 
 .trivia-output-table {
+  width: 100%;
+  border-collapse: collapse;
+  border-spacing: 0;
+  margin: 0;
+  padding: 0;
+}
+
+.trivia-output-table thead tr {
+  background-color: #1a73e85a;
+  text-align: left;
+  font-size: clamp(1rem, 1.5vw, 2rem);
+}
+
+.trivia-output-table tbody tr {
+  border-bottom: 1px solid #d3d3d3;
+}
+
+.trivia-output-table th,
+.trivia-output-table td {
+  max-width: clamp(200px, 20vw, 500px);
+  padding: 10px;
+  border: 1px solid #d3d3d3;
+}
+.trivia-output-table .checkbox-cell {
+  text-align: center;
+}
+
+.easy {
+  background-color: rgb(226, 255, 226);
+}
+
+.medium {
+  background-color: rgb(253, 253, 213);
+}
+
+.hard {
+  background-color: rgb(255, 213, 213);
 }

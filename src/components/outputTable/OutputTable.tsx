@@ -60,10 +60,7 @@ export function OutputContainer({ result }: OCProps) {
   };
 
   const handleExportToPDF = () => {
-    const pdf = buildPDF(rounds, selectedQuestions);
-
-    
-  
+    buildPDF(rounds, selectedQuestions);
   };
 
   return (

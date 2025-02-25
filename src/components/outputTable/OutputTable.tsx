@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { TriviaQuestion, TriviaResponse } from '../../types/api';
 import './output-table.css';
+import { buildPDF } from './pdfExporter';
 
 type OTProps = {
   round: TriviaQuestion[];
@@ -60,6 +61,9 @@ export function OutputContainer({ result }: OCProps) {
 
   const handleExportToPDF = () => {
     const pdf = buildPDF(rounds, selectedQuestions);
+
+    
+  
   };
 
   return (

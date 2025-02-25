@@ -85,47 +85,6 @@ function CategoryCard({
   );
 }
 
-const dummyData: TriviaResponse = {
-  rounds: [
-    // Round 1
-    [
-      {
-        question: 'What is the capital of France?',
-        answer: 'Paris',
-        difficulty: 'easy',
-      },
-      {
-        question: "Which element has the chemical symbol 'Au'?",
-        answer: 'Gold',
-        difficulty: 'medium',
-      },
-      {
-        question: "In quantum physics, what is Heisenberg's Uncertainty Principle?",
-        answer: 'The precise position and momentum of a particle cannot be simultaneously known',
-        difficulty: 'hard',
-      },
-    ],
-    // Round 2
-    [
-      {
-        question: 'What planet is known as the Red Planet?',
-        answer: 'Mars',
-        difficulty: 'easy',
-      },
-      {
-        question: "Who painted 'The Starry Night'?",
-        answer: 'Vincent van Gogh',
-        difficulty: 'medium',
-      },
-      {
-        question: 'What is the Fibonacci sequence?',
-        answer: 'A sequence where each number is the sum of the two preceding ones',
-        difficulty: 'hard',
-      },
-    ],
-  ],
-};
-
 export default function FormContainer() {
   const [categories, setCategories] = useState<Category[]>([
     {
@@ -201,8 +160,7 @@ export default function FormContainer() {
       </button>
 
       {isLoading && <LoadSpinner />}
-      {/* {result.rounds.length > 0 && <OutputContainer result={result} />} */}
-      <OutputContainer result={dummyData} />
+      {result.rounds.length > 0 && <OutputContainer result={result} />}
     </div>
   );
 }

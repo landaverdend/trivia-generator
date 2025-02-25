@@ -17,6 +17,33 @@ const port = 3000;
 const app = express();
 
 app.use(express.json());
+
+const allowedOrigins = [
+  'http://localhost',
+  'http://localhost:80',
+  'http://localhost:3000',
+  'http://127.0.0.1',
+  'http://127.0.0.1:80',
+  'http://127.0.0.1:3000',
+  'https://trivia.landaverde.in/'
+];
+
+app.use(
+  cors({
+    origin: (origin, callback) => {
+      // Allow requests with no origin (like mobile apps or curl requests)
+      if (!origin) return callback(null, true);
+
+      if (allowedOrigins.indexOf(origin) === -1) {
+        const msg = 'The CORS policy for this site does not allow access from the specified Origin.';
+        return callback(new Error(msg), false);
+      }
+      return callback(null, true);
+    },
+    methods: ['POST'], // Only allow POST since that's all we need
+    credentials: true, // Allow credentials to be sent
+  })
+);
 app.use(cors());
 app.options('*', cors()); // Enable pre-flight for all requests
 

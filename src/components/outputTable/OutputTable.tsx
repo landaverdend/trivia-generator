@@ -65,7 +65,9 @@ export function OutputContainer({ result }: OCProps) {
 
   return (
     <div className="output-container">
-      <button onClick={handleExportToPDF} className="export-button">Export</button>
+      <button onClick={handleExportToPDF} className="export-button">
+        Export to PDF
+      </button>
 
       {rounds.map((round, index) => (
         <OutputTable key={index} round={round} selectedQuestions={selectedQuestions} onQuestionSelect={handleQuestionSelect} />

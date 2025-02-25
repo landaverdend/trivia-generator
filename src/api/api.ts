@@ -1,7 +1,9 @@
 import { PostBody, TriviaResponse } from '../types/api';
 
+const API_URL = `http://${window.location.hostname}:3000`;
+
 export async function generateTrivia(data: PostBody): Promise<TriviaResponse> {
-  const response = await fetch('http://localhost:3000/api/generateTrivia', {
+  const response = await fetch(`${API_URL}/api/generateTrivia`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',

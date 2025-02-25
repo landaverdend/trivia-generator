@@ -201,8 +201,8 @@ export default function FormContainer() {
       </button>
 
       {isLoading && <LoadSpinner />}
-      {/* {result.rounds.length > 0 && <OutputContainer result={result} />} */}
-      <OutputContainer result={dummyData} />
+      {result.rounds.length > 0 && <OutputContainer result={result} />}
+      {/* <OutputContainer result={dummyData} /> */}
     </div>
   );
 }

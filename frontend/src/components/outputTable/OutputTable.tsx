@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { TriviaQuestion, TriviaResponse } from '../../types/api';
 import './output-table.css';
 
@@ -58,8 +58,14 @@ export function OutputContainer({ result }: OCProps) {
     });
   };
 
+  const handleExportToPDF = () => {
+    const pdf = buildPDF(rounds, selectedQuestions);
+  };
+
   return (
     <div className="output-container">
+      <button onClick={handleExportToPDF}>Export</button>
+
       {rounds.map((round, index) => (
         <OutputTable key={index} round={round} selectedQuestions={selectedQuestions} onQuestionSelect={handleQuestionSelect} />
       ))}

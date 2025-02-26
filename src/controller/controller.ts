@@ -26,7 +26,8 @@ const allowedOrigins = [
   'http://127.0.0.1',
   'http://127.0.0.1:80',
   'http://127.0.0.1:3000',
-  'https://trivia.landaverde.in/'
+  'https://trivia.landaverde.in/',
+  'http://trivia.landaverde.in/'
 ];
 
 app.use(

@@ -1,9 +1,9 @@
 import express from 'express';
-import { Request, Response } from 'express';
-import { TriviaResponse, PostBody, ErrorResponse, Category } from '../types/api';
-import OpenAI from 'openai';
-import dotenv from 'dotenv';
-import { PROMPT_1 } from './prompt';
+// import { Request, Response } from 'express';
+// import { TriviaResponse, PostBody, ErrorResponse, Category } from '../types/api';
+// import OpenAI from 'openai';
+// import dotenv from 'dotenv';
+// import { PROMPT_1 } from './prompt';
 
 // // Load environment variables from .env file
 // dotenv.config();
@@ -68,5 +68,5 @@ const app = express();
 // });
 
 app.listen(3000, () => {
-  console.log(`Server is running at http://localhost:${port}`);
+  console.log(`Server is running at http://localhost:${3000}`);
 });

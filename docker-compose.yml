@@ -10,16 +10,18 @@ services:
       - "8081:8081"
     networks:
       - web
-
-
-  # backend:
-  #   build:
-  #     context: .
-  #     dockerfile: Dockerfile.backend
-  #   ports:
-  #     - "3001:3001"
-  #   environment:
-  #     - OPENAI_API_KEY=${OPENAI_API_KEY}
+  backend:
+    container_name: trivia-backend
+    build:
+      context: .
+      dockerfile: Dockerfile.backend
+    ports:
+      - "3001:3001"
+    environment:
+      - PORT=3001
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+    networks:
+      - web
 
 networks:
   web:

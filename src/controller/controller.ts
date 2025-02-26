@@ -4,88 +4,69 @@ import { TriviaResponse, PostBody, ErrorResponse, Category } from '../types/api'
 import OpenAI from 'openai';
 import dotenv from 'dotenv';
 import { PROMPT_1 } from './prompt';
-import cors from 'cors';
 
-// Load environment variables from .env file
-dotenv.config();
+// // Load environment variables from .env file
+// dotenv.config();
 
-const client = new OpenAI({
-  apiKey: process.env[process.env.OPENAI_API_KEY as string], // This is the default and can be omitted
-});
+// const client = new OpenAI({
+//   apiKey: process.env[process.env.OPENAI_API_KEY as string], // This is the default and can be omitted
+// });
 
-const port = 3000;
+// const port = 3000;
 const app = express();
 
-app.use(express.json());
+// app.use(express.json());
 
-const allowedOrigins = [
-  'http://localhost',
-  'http://localhost:80',
-  'http://localhost:8081',
-  'http://localhost:3000',
-  'http://127.0.0.1',
-  'http://127.0.0.1:80',
-  'http://127.0.0.1:3000',
-  'https://trivia.landaverde.in', // Remove trailing slash
-  'http://trivia.landaverde.in', // Add HTTP version
-];
+// // const allowedOrigins = [
+// //   'http://localhost',
+// //   'http://localhost:80',
+// //   'http://localhost:8081',
+// //   'http://localhost:3000',
+// //   'http://127.0.0.1',
+// //   'http://127.0.0.1:80',
+// //   'http://127.0.0.1:3000',
+// //   'https://trivia.landaverde.in', // Remove trailing slash
+// //   'http://trivia.landaverde.in', // Add HTTP version
+// // ];
 
-app.use(
-  cors({
-    origin: (origin, callback) => {
-      // Allow requests with no origin (like mobile apps or curl requests)
-      if (!origin) return callback(null, true);
+// function serializeCategory(category: Category): string {
+//   const { easy, medium, hard } = category.difficulties;
+//   return `{The topic of ${category.topic} should have ${easy} easy, ${medium} medium, and ${hard} hard questions}`;
+// }
 
-      if (allowedOrigins.indexOf(origin) === -1) {
-        const msg = 'The CORS policy for this site does not allow access from the specified Origin.';
-        return callback(new Error(msg), false);
-      }
-      return callback(null, true);
-    },
-    methods: ['POST'], // Only allow POST since that's all we need
-    credentials: true, // Allow credentials to be sent
-  })
-);
+// app.post('/api/generateTrivia', async (req: Request<{}, {}, PostBody>, res: Response<TriviaResponse | ErrorResponse>) => {
+//   const { categories } = req.body;
 
-function serializeCategory(category: Category): string {
-  const { easy, medium, hard } = category.difficulties;
-  return `{The topic of ${category.topic} should have ${easy} easy, ${medium} medium, and ${hard} hard questions}`;
-}
+//   if (!categories || categories.length === 0) {
+//     res.status(400).json({ error: 'Missing field: category' });
+//   }
 
-app.post('/api/generateTrivia', async (req: Request<{}, {}, PostBody>, res: Response<TriviaResponse | ErrorResponse>) => {
-  const { categories } = req.body;
+//   const categoriesPrompt =
+//     '[' +
+//     categories.map((category, i) => {
+//       return serializeCategory(category) + (i === categories.length ? ', ' : '');
+//     }) +
+//     ']';
 
-  if (!categories || categories.length === 0) {
-    res.status(400).json({ error: 'Missing field: category' });
-  }
+//   const thePrompt = PROMPT_1.replace('{categories}', categoriesPrompt);
 
-  const categoriesPrompt =
-    '[' +
-    categories.map((category, i) => {
-      return serializeCategory(category) + (i === categories.length ? ', ' : '');
-    }) +
-    ']';
-  console.log(categories);
+//   const params: OpenAI.Chat.ChatCompletionCreateParams = {
+//     messages: [
+//       {
+//         role: 'user',
+//         content: thePrompt,
+//       },
+//     ],
+//     model: 'gpt-4o',
+//   };
 
-  const thePrompt = PROMPT_1.replace('{categories}', categoriesPrompt);
+//   const response = await client.chat.completions.create(params);
+//   const message = response.choices[0].message.content as string;
+//   const ret = JSON.parse(message.replace(/^```json\n/, '').replace(/\n```$/, '') as string);
 
-  const params: OpenAI.Chat.ChatCompletionCreateParams = {
-    messages: [
-      {
-        role: 'user',
-        content: thePrompt,
-      },
-    ],
-    model: 'gpt-4o',
-  };
+//   res.status(200).json(ret as TriviaResponse);
+// });
 
-  const response = await client.chat.completions.create(params);
-  const message = response.choices[0].message.content as string;
-  const ret = JSON.parse(message.replace(/^```json\n/, '').replace(/\n```$/, '') as string);
-
-  res.status(200).json(ret as TriviaResponse);
-});
-
-app.listen(port, () => {
+app.listen(3000, () => {
   console.log(`Server is running at http://localhost:${port}`);
 });

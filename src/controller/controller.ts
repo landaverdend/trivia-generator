@@ -21,13 +21,13 @@ app.use(express.json());
 const allowedOrigins = [
   'http://localhost',
   'http://localhost:80',
-  'http://localhost:8081', 
+  'http://localhost:8081',
   'http://localhost:3000',
   'http://127.0.0.1',
   'http://127.0.0.1:80',
   'http://127.0.0.1:3000',
-  'https://trivia.landaverde.in/',
-  'http://trivia.landaverde.in/'
+  'https://trivia.landaverde.in', // Remove trailing slash
+  'http://trivia.landaverde.in', // Add HTTP version
 ];
 
 app.use(
@@ -46,8 +46,6 @@ app.use(
     credentials: true, // Allow credentials to be sent
   })
 );
-app.use(cors());
-app.options('*', cors()); // Enable pre-flight for all requests
 
 function serializeCategory(category: Category): string {
   const { easy, medium, hard } = category.difficulties;

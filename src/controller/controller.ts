@@ -1,4 +1,4 @@
-import express from 'express';
+// import express from 'express';
 // import { Request, Response } from 'express';
 // import { TriviaResponse, PostBody, ErrorResponse, Category } from '../types/api';
 // import OpenAI from 'openai';
@@ -13,21 +13,21 @@ import express from 'express';
 // });
 
 // const port = 3000;
-const app = express();
+// const app = express();
 
 // app.use(express.json());
 
-// // const allowedOrigins = [
-// //   'http://localhost',
-// //   'http://localhost:80',
-// //   'http://localhost:8081',
-// //   'http://localhost:3000',
-// //   'http://127.0.0.1',
-// //   'http://127.0.0.1:80',
-// //   'http://127.0.0.1:3000',
-// //   'https://trivia.landaverde.in', // Remove trailing slash
-// //   'http://trivia.landaverde.in', // Add HTTP version
-// // ];
+// const allowedOrigins = [
+//   'http://localhost',
+//   'http://localhost:80',
+//   'http://localhost:8081',
+//   'http://localhost:3000',
+//   'http://127.0.0.1',
+//   'http://127.0.0.1:80',
+//   'http://127.0.0.1:3000',
+//   'https://trivia.landaverde.in', // Remove trailing slash
+//   'http://trivia.landaverde.in', // Add HTTP version
+// ];
 
 // function serializeCategory(category: Category): string {
 //   const { easy, medium, hard } = category.difficulties;
@@ -67,6 +67,6 @@ const app = express();
 //   res.status(200).json(ret as TriviaResponse);
 // });
 
-app.listen(3000, () => {
-  console.log(`Server is running at http://localhost:${3000}`);
-});
+// app.listen(3000, () => {
+//   console.log(`Server is running at http://localhost:${3000}`);
+// });

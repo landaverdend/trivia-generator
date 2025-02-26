@@ -2,11 +2,14 @@ version: '3.8'
 
 services:
   frontend:
+    container_name: trivia-frontend 
     build:
       context: .
       dockerfile: Dockerfile.frontend
     ports:
       - "8081:8081"
+    networks:
+      - web
 
 
   # backend:
@@ -17,3 +20,7 @@ services:
   #     - "3001:3001"
   #   environment:
   #     - OPENAI_API_KEY=${OPENAI_API_KEY}
+
+networks:
+  web:
+    external: true

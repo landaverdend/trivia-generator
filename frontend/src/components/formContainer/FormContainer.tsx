@@ -2,7 +2,6 @@ import { useState } from 'react';
 import './form-container.css';
 import { generateTrivia } from '../../api/api';
 import { OutputContainer } from '../outputTable/OutputTable';
-import React from 'react';
 import { TriviaResponse, Category, Difficulty } from '../../types/api';
 
 type LSProps = {

@@ -1,6 +1,6 @@
 {
   "files": [],
-  "references": [{ "path": "./frontend/tsconfig.app.json" }],
+  "references": [{ "path": "./frontend/tsconfig.json" }],
   "compilerOptions": {
     "esModuleInterop": true
   }

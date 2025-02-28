@@ -2,8 +2,8 @@ import express from 'express';
 import { Request, Response } from 'express';
 import OpenAI from 'openai';
 import dotenv from 'dotenv';
-import { PROMPT_1 } from './prompt';
 import cors from 'cors';
+import { PROMPT_1 } from './prompt';
 import { TriviaResponse, PostBody, ErrorResponse, Category } from './api';
 
 dotenv.config();

@@ -1,10 +1,12 @@
 {
   "name": "backend",
   "version": "1.0.0",
+  "type": "module",
   "scripts": {
-    "dev": "ts-node-dev ./src/controller/controller.ts",
-    "build": "tsc -b && vite build",
-    "lint": "eslint ."
+    "dev": "tsx watch src/controller/controller.ts",
+    "build": "tsc",
+    "lint": "eslint .",
+    "start": "node dist/controller/controller.js"
   },
   "keywords": [],
   "author": "",
@@ -15,8 +17,7 @@
     "@types/express": "^4.17.21",
     "@types/node": "^22.13.4",
     "@typescript-eslint/eslint-plugin": "^8.24.0",
-    "ts-node": "^10.9.2",
-    "ts-node-dev": "^2.0.0",
+    "tsx": "^4.19.3",
     "typescript": "^5.7.3",
     "typescript-eslint": "^8.0.1"
   },

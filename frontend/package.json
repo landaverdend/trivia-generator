@@ -4,10 +4,10 @@
   "main": "index.js",
   "scripts": {
     "dev": "vite",
+    "dev-backend": "ts-node-dev ./src/controller/controller.ts",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
-    "preview": "vite preview",
-    "dev-backend": "ts-node-dev ./src/controller/controller.ts"
+    "preview": "vite preview"
   },
   "keywords": [],
   "author": "",

@@ -1,0 +1,10 @@
+{
+  "extends": "../common/tsconfig.base.json",
+  "compilerOptions": {
+    "jsx": "react-jsx",
+    "lib": ["DOM", "DOM.Iterable", "ESNext"],
+    "module": "ESNext",
+    "moduleResolution": "bundler"
+  },
+  "include": ["src", "../common"]
+} 

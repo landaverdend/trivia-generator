@@ -4,7 +4,7 @@ import OpenAI from 'openai';
 import dotenv from 'dotenv';
 import { PROMPT_1 } from './prompt';
 import cors from 'cors';
-import { TriviaResponse, PostBody, ErrorResponse, Category } from '../../../common/types/api';
+import { TriviaResponse, PostBody, ErrorResponse, Category } from './api';
 
 dotenv.config();
 const PORT = process.env.PORT || 3001;

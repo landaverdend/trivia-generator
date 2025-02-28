@@ -6,10 +6,12 @@ export type ErrorResponse = {
   error: string;
 };
 
+export type Difficulty = 'easy' | 'medium' | 'hard';
+
 export type TriviaQuestion = {
   question: string;
   answer: string;
-  difficulty: string;
+  difficulty: Difficulty;
 };
 
 export type TriviaResponse = {
@@ -24,5 +26,3 @@ export type Category = {
     hard: number;
   };
 };
-
-export type Difficulty = 'easy' | 'medium' | 'hard';

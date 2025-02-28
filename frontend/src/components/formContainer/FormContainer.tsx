@@ -1,8 +1,9 @@
 import { useState } from 'react';
 import './form-container.css';
-import { Difficulty, TriviaResponse } from '../../types/api';
 import { generateTrivia } from '../../api/api';
 import { OutputContainer } from '../outputTable/OutputTable';
+import React from 'react';
+import { TriviaResponse, Category, Difficulty } from '../../types/api';
 
 type LSProps = {
   color?: string;
@@ -12,11 +13,6 @@ function LoadSpinner({ color }: LSProps) {
 
   return <span className="load-spinner" style={{ borderTopColor: colorToUse, borderRightColor: colorToUse }}></span>;
 }
-
-type Category = {
-  topic: string;
-  difficulties: Record<Difficulty, number>;
-};
 
 function DifficultyInput({
   label,

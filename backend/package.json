@@ -2,10 +2,9 @@
   "name": "backend",
   "version": "1.0.0",
   "scripts": {
-    "dev": "ts-node-dev ./src/controller/controller.mts",
+    "dev": "ts-node-dev ./src/controller/controller.ts",
     "build": "tsc -b && vite build",
-    "lint": "eslint .",
-    "preview": "vite preview"
+    "lint": "eslint ."
   },
   "keywords": [],
   "author": "",

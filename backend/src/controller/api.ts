@@ -12,6 +12,7 @@ export type TriviaQuestion = {
   question: string;
   answer: string;
   difficulty: Difficulty;
+  topic?: string;
 };
 
 export type TriviaResponse = {
@@ -25,4 +26,9 @@ export type Category = {
     medium: number;
     hard: number;
   };
+};
+
+export type RegenerateQuestionBody = {
+  topic: string;
+  difficulty: Difficulty;
 };

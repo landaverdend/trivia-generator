@@ -14,6 +14,7 @@ export const PROMPT_1 = `
    question: string;
    answer: string;
    difficulty: 'easy' | 'medium' | 'hard';
+   topic: string; // the topic of the question...
   }
 
   Where rounds is a 2D array of trivia-questions, where each array inside contains the round of questions for each specific category as mentioned above. Make sure to represent each category thoroughly.

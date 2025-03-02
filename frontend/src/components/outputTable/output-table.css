@@ -30,6 +30,7 @@
   max-width: clamp(200px, 20vw, 500px);
   padding: 10px;
   border: 1px solid #d3d3d3;
+  text-align: center;
 }
 .trivia-output-table .checkbox-cell {
   text-align: center;
@@ -51,12 +52,21 @@
   background-color: #1a73e8;
   color: white;
   border: none;
-  
+
   padding: 15px;
   border-radius: 5px;
 }
 
 .export-button:hover {
+  cursor: pointer;
+  opacity: 0.8;
+}
+
+.regenerate-button {
+
+}
+
+.regenerate-button:hover {
   cursor: pointer;
   opacity: 0.8;
 }

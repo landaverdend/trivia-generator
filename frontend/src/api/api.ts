@@ -14,3 +14,19 @@ export async function generateTrivia(data: PostBody): Promise<TriviaResponse> {
   const result = await response.json();
   return result;
 }
+
+export const regenerateQuestion = async (topic: string, difficulty: string) => {
+  const response = await fetch(`${API_URL}/api/regenerateQuestion`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ topic, difficulty }),
+  });
+
+  if (!response.ok) {
+    throw new Error('Failed to regenerate question');
+  }
+
+  return response.json();
+};

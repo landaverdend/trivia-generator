@@ -67,6 +67,40 @@ app.post('/api/generateTrivia', async (req: Request<{}, {}, PostBody>, res: Resp
   res.status(200).json(ret as TriviaResponse);
 });
 
+app.post('/api/regenerateQuestion', async (req: Request, res: Response) => {
+  const { topic, difficulty } = req.body;
+
+  if (!topic || !difficulty) {
+    return res.status(400).json({ error: 'Missing topic or difficulty' });
+  }
+
+  const prompt = `Generate a single trivia question about ${topic} with ${difficulty} difficulty. Return it in this JSON format:
+  {
+    "question": "the question text",
+    "answer": "the answer text"
+  }`;
+
+  try {
+    const params: OpenAI.Chat.ChatCompletionCreateParams = {
+      messages: [{ role: 'user', content: prompt }],
+      model: 'gpt-4',
+    };
+
+    const response = await client.chat.completions.create(params);
+    const message = response.choices[0].message.content as string;
+    const questionData = JSON.parse(message.replace(/^```json\n/, '').replace(/\n```$/, ''));
+
+    res.status(200).json({
+      ...questionData,
+      difficulty,
+      topic,
+    });
+  } catch (error) {
+    console.error('Error regenerating question:', error);
+    res.status(500).json({ error: 'Failed to regenerate question' });
+  }
+});
+
 app.listen(PORT, () => {
   console.log(`Server is running at http://localhost:${PORT}`);
 });

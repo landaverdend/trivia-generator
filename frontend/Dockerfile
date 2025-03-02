@@ -2,6 +2,10 @@ FROM node:20-alpine
 
 WORKDIR /app
 
+# Set build-time argument and environment variable
+ARG VITE_ENABLE_ANALYTICS=true
+ENV VITE_ENABLE_ANALYTICS=$VITE_ENABLE_ANALYTICS
+
 # Copy package files
 COPY package*.json ./
 COPY tsconfig.json ./

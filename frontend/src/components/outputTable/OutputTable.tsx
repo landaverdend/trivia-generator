@@ -11,23 +11,29 @@ type ReloadingState = {
 
 type OTProps = {
   round: TriviaQuestion[];
+  roundIndex: number;
   selectedQuestions: Set<string>;
   onQuestionSelect: (question: string, isSelected: boolean) => void;
+  onUpdateQuestion: (roundIndex: number, questionIndex: number, newQuestion: TriviaQuestion) => void;
 };
 
-function OutputTable({ round, selectedQuestions, onQuestionSelect }: OTProps) {
+function OutputTable({ round, roundIndex, selectedQuestions, onQuestionSelect, onUpdateQuestion }: OTProps) {
   const [isReloadingQuestion, setIsReloadingQuestion] = useState(false);
   const [isReloading, setIsReloading] = useState<ReloadingState>({ isReloading: false, index: 0 });
 
-  const handleRegenQuestion = async ({ topic, difficulty, question }: TriviaQuestion, index: number) => {
+  const handleRegenQuestion = async ({ topic, difficulty }: TriviaQuestion, index: number) => {
     if (isReloadingQuestion) return;
 
     setIsReloadingQuestion(true);
-    setIsReloading({ isReloading: true, index: index });
+    setIsReloading({ isReloading: true, index });
+    
     try {
-      console.log(round);
       const newQuestion = await regenerateQuestion(topic as string, difficulty);
-      console.log(newQuestion);
+      onUpdateQuestion(roundIndex, index, {
+        ...newQuestion,
+        topic,
+        difficulty
+      });
     } catch (error) {
       alert('Failed to reload question');
     } finally {
@@ -79,8 +85,7 @@ function OutputTable({ round, selectedQuestions, onQuestionSelect }: OTProps) {
 
 type OCProps = { result: TriviaResponse };
 export function OutputContainer({ result }: OCProps) {
-  const { rounds } = result;
-
+  const [rounds, setRounds] = useState(result.rounds);
   const [selectedQuestions, setSelectedQuestions] = useState<Set<string>>(
     new Set(rounds.flatMap((round) => round.map((q) => q.question)))
   );
@@ -101,6 +106,15 @@ export function OutputContainer({ result }: OCProps) {
     buildPDF(rounds, selectedQuestions);
   };
 
+  const updateQuestion = (roundIndex: number, questionIndex: number, newQuestion: TriviaQuestion) => {
+    setRounds(prevRounds => {
+      const newRounds = [...prevRounds];
+      newRounds[roundIndex] = [...newRounds[roundIndex]];
+      newRounds[roundIndex][questionIndex] = newQuestion;
+      return newRounds;
+    });
+  };
+
   return (
     <div className="output-container">
       <button onClick={handleExportToPDF} className="export-button">
@@ -108,7 +122,14 @@ export function OutputContainer({ result }: OCProps) {
       </button>
 
       {rounds.map((round, index) => (
-        <OutputTable key={index} round={round} selectedQuestions={selectedQuestions} onQuestionSelect={handleQuestionSelect} />
+        <OutputTable 
+          key={index} 
+          round={round} 
+          roundIndex={index}
+          selectedQuestions={selectedQuestions} 
+          onQuestionSelect={handleQuestionSelect}
+          onUpdateQuestion={updateQuestion}
+        />
       ))}
     </div>
   );

@@ -124,7 +124,12 @@ export default function FormContainer() {
       const response = await generateTrivia({
         categories,
       });
-      setResult(response);
+
+      if ('error' in response) {
+        alert(response.error);
+      } else {
+        setResult(response);
+      }
     } catch (error) {
       alert('There was an error generating trivia.');
     } finally {
@@ -155,7 +160,7 @@ export default function FormContainer() {
       </button>
 
       {isLoading && <LoadSpinner />}
-      {result.rounds.length > 0 && <OutputContainer result={result} />}
+      {result.rounds.length > 0 && !isLoading && <OutputContainer result={result} />}
     </div>
   );
 }

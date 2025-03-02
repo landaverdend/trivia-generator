@@ -1,8 +1,8 @@
-import { PostBody, TriviaResponse } from '../types/api';
+import { PostBody, TriviaError, TriviaResponse } from '../types/api';
 
 const API_URL = window.location.hostname === 'localhost' ? `http://localhost:3001` : ``; // Use relative path instead
 
-export async function generateTrivia(data: PostBody): Promise<TriviaResponse> {
+export async function generateTrivia(data: PostBody): Promise<TriviaResponse | TriviaError> {
   const response = await fetch(`${API_URL}/api/generateTrivia`, {
     method: 'POST',
     headers: {

@@ -29,6 +29,12 @@ app.use(
   })
 );
 
+// Add these constants at the top
+const MAX_QUESTIONS_PER_ROUND = 15;
+const MAX_RETRIES = 3;
+const MAX_TOKENS = 1000; // Conservative token limit for single questions
+const MAX_TOKENS_BULK = 4000; // For generating multiple questions
+
 function serializeCategory(category: Category): string {
   const { easy, medium, hard } = category.difficulties;
   return `{The topic of ${category.topic} should have ${easy} easy, ${medium} medium, and ${hard} hard questions}`;
@@ -38,33 +44,50 @@ app.post('/api/generateTrivia', async (req: Request<{}, {}, PostBody>, res: Resp
   const { categories } = req.body;
 
   if (!categories || categories.length === 0) {
-    res.status(400).json({ error: 'Missing field: category' });
+    return res.status(400).json({ error: 'Missing field: category' });
+  }
+
+  for (const category of categories) {
+    // Add question limit check
+    const totalQuestions = category.difficulties.easy + category.difficulties.medium + category.difficulties.hard;
+
+    if (totalQuestions > MAX_QUESTIONS_PER_ROUND) {
+      return res.status(400).json({
+        error: `Too many questions requested. Maximum is ${MAX_QUESTIONS_PER_ROUND} per round.`,
+      });
+    }
   }
 
   const categoriesPrompt =
-    '[' +
-    categories.map((category, i) => {
-      return serializeCategory(category) + (i === categories.length ? ', ' : '');
-    }) +
-    ']';
+    '[' + categories.map((category, i) => serializeCategory(category) + (i === categories.length ? ', ' : '')).join('') + ']';
 
   const thePrompt = PROMPT_1.replace('{categories}', categoriesPrompt);
 
-  const params: OpenAI.Chat.ChatCompletionCreateParams = {
-    messages: [
-      {
-        role: 'user',
-        content: thePrompt,
-      },
-    ],
-    model: 'gpt-4o',
-  };
+  let attempts = 0;
+  while (attempts < MAX_RETRIES) {
+    try {
+      const params: OpenAI.Chat.ChatCompletionCreateParams = {
+        messages: [{ role: 'user', content: thePrompt }],
+        model: 'gpt-4',
+        max_tokens: MAX_TOKENS_BULK,
+        temperature: 0.7,
+      };
 
-  const response = await client.chat.completions.create(params);
-  const message = response.choices[0].message.content as string;
-  const ret = JSON.parse(message.replace(/^```json\n/, '').replace(/\n```$/, '') as string);
+      const response = await client.chat.completions.create(params);
+      const message = response.choices[0].message.content as string;
+      const ret = JSON.parse(message.replace(/^```json\n/, '').replace(/\n```$/, '') as string);
 
-  res.status(200).json(ret as TriviaResponse);
+      return res.status(200).json(ret as TriviaResponse);
+    } catch (error) {
+      attempts++;
+      if (attempts === MAX_RETRIES) {
+        console.error('Max retries reached:', error);
+        return res.status(500).json({ error: 'Failed to generate questions after multiple attempts' });
+      }
+      // Wait 1 second before retrying
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+    }
+  }
 });
 
 app.post('/api/regenerateQuestion', async (req: Request, res: Response) => {
@@ -80,24 +103,34 @@ app.post('/api/regenerateQuestion', async (req: Request, res: Response) => {
     "answer": "the answer text"
   }`;
 
-  try {
-    const params: OpenAI.Chat.ChatCompletionCreateParams = {
-      messages: [{ role: 'user', content: prompt }],
-      model: 'gpt-4',
-    };
+  let attempts = 0;
+  while (attempts < MAX_RETRIES) {
+    try {
+      const params: OpenAI.Chat.ChatCompletionCreateParams = {
+        messages: [{ role: 'user', content: prompt }],
+        model: 'gpt-4',
+        max_tokens: MAX_TOKENS,
+        temperature: 0.7,
+      };
 
-    const response = await client.chat.completions.create(params);
-    const message = response.choices[0].message.content as string;
-    const questionData = JSON.parse(message.replace(/^```json\n/, '').replace(/\n```$/, ''));
+      const response = await client.chat.completions.create(params);
+      const message = response.choices[0].message.content as string;
+      const questionData = JSON.parse(message.replace(/^```json\n/, '').replace(/\n```$/, ''));
 
-    res.status(200).json({
-      ...questionData,
-      difficulty,
-      topic,
-    });
-  } catch (error) {
-    console.error('Error regenerating question:', error);
-    res.status(500).json({ error: 'Failed to regenerate question' });
+      return res.status(200).json({
+        ...questionData,
+        difficulty,
+        topic,
+      });
+    } catch (error) {
+      attempts++;
+      if (attempts === MAX_RETRIES) {
+        console.error('Max retries reached:', error);
+        return res.status(500).json({ error: 'Failed to regenerate question after multiple attempts' });
+      }
+      // Wait 1 second before retrying
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+    }
   }
 });
 

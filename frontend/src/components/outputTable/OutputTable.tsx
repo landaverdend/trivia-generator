@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { TriviaQuestion, TriviaResponse } from '../../types/api';
 import './output-table.css';
 import { buildPDF } from './pdfExporter';
@@ -18,28 +18,31 @@ type OTProps = {
 };
 
 function OutputTable({ round, roundIndex, selectedQuestions, onQuestionSelect, onUpdateQuestion }: OTProps) {
-  const [isReloadingQuestion, setIsReloadingQuestion] = useState(false);
   const [isReloading, setIsReloading] = useState<ReloadingState>({ isReloading: false, index: 0 });
 
   const handleRegenQuestion = async ({ topic, difficulty }: TriviaQuestion, index: number) => {
-    if (isReloadingQuestion) return;
+    if (isReloading.isReloading) return;
 
-    setIsReloadingQuestion(true);
     setIsReloading({ isReloading: true, index });
-    
-    try {
-      const newQuestion = await regenerateQuestion(topic as string, difficulty);
-      onUpdateQuestion(roundIndex, index, {
-        ...newQuestion,
-        topic,
-        difficulty
-      });
-    } catch (error) {
-      alert('Failed to reload question');
-    } finally {
-      setIsReloadingQuestion(false);
-      setIsReloading({ isReloading: false, index: 0 });
+
+    let error = null;
+    for (let attempt = 0; attempt < 3; attempt++) {
+      try {
+        const newQuestion = await regenerateQuestion(topic as string, difficulty);
+        onUpdateQuestion(roundIndex, index, {
+          ...newQuestion,
+          topic,
+          difficulty,
+        });
+      } catch (err) {
+        error = err;
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+      } finally {
+        setIsReloading({ isReloading: false, index: 0 });
+      }
     }
+
+    alert('Failed to reload question after multiple attempts');
   };
 
   return (
@@ -107,7 +110,7 @@ export function OutputContainer({ result }: OCProps) {
   };
 
   const updateQuestion = (roundIndex: number, questionIndex: number, newQuestion: TriviaQuestion) => {
-    setRounds(prevRounds => {
+    setRounds((prevRounds) => {
       const newRounds = [...prevRounds];
       newRounds[roundIndex] = [...newRounds[roundIndex]];
       newRounds[roundIndex][questionIndex] = newQuestion;
@@ -122,11 +125,11 @@ export function OutputContainer({ result }: OCProps) {
       </button>
 
       {rounds.map((round, index) => (
-        <OutputTable 
-          key={index} 
-          round={round} 
+        <OutputTable
+          key={index}
+          round={round}
           roundIndex={index}
-          selectedQuestions={selectedQuestions} 
+          selectedQuestions={selectedQuestions}
           onQuestionSelect={handleQuestionSelect}
           onUpdateQuestion={updateQuestion}
         />

@@ -19,6 +19,8 @@ export type TriviaResponse = {
   rounds: Array<Array<TriviaQuestion>>;
 };
 
+export type TriviaError = { error: string };
+
 export type Category = {
   topic: string;
   difficulties: {

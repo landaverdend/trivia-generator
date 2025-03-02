@@ -76,13 +76,16 @@
   font-size: clamp(0.7rem, 2vw, 1rem);
   gap: 15px;
 
-  input {
-    height: 100%;
-    padding: 0 3px 0 3px;
-    border: 1px solid white;
-    text-align: center;
-    font-size: clamp(0.8rem, 1.5vw, 1.2rem);
-    border-radius: 5px;
+  .difficulty-selector {
+    display: flex;
+    gap: 5px;
+
+    select {
+      height: clamp(20px, 3vh, 50px);
+      border: 1px solid white;
+      border-radius: 5px;
+      padding: 0 3px 0 3px;
+    }
   }
 }
 
@@ -91,7 +94,7 @@
   border: 1px solid black;
   border-radius: 5px;
   background-color: #211ae8;
-  color: white; 
+  color: white;
   padding: 10px;
 }
 

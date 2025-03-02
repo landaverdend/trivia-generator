@@ -25,9 +25,15 @@ function DifficultyInput({
   onChange: (value: number) => void;
 }) {
   return (
-    <span>
-      <input type="number" min="0" max={max} value={value} onChange={(e) => onChange(Number(e.target.value))} /> <b>{label}</b>{' '}
-      questions
+    <span className="difficulty-selector">
+      <select value={value} onChange={(e) => onChange(Number(e.target.value))} className="difficulty-select">
+        {Array.from({ length: 16 }, (_, i) => i).map((num) => (
+          <option key={num} value={num}>
+            {num}
+          </option>
+        ))}
+      </select>
+      {label} questions
     </span>
   );
 }

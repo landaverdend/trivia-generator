@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { TriviaQuestion, TriviaResponse } from '../../types/api';
 import './output-table.css';
 import { buildPDF } from './pdfExporter';
@@ -25,7 +25,6 @@ function OutputTable({ round, roundIndex, selectedQuestions, onQuestionSelect, o
 
     setIsReloading({ isReloading: true, index });
 
-    let error = null;
     for (let attempt = 0; attempt < 3; attempt++) {
       try {
         const newQuestion = await regenerateQuestion(topic as string, difficulty);
@@ -35,7 +34,6 @@ function OutputTable({ round, roundIndex, selectedQuestions, onQuestionSelect, o
           difficulty,
         });
       } catch (err) {
-        error = err;
         await new Promise((resolve) => setTimeout(resolve, 1000));
       } finally {
         setIsReloading({ isReloading: false, index: 0 });

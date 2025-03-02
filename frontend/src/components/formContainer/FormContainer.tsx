@@ -16,7 +16,6 @@ function LoadSpinner({ color }: LSProps) {
 function DifficultyInput({
   label,
   value,
-  max,
   onChange,
 }: {
   label: string;

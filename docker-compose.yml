@@ -2,21 +2,23 @@ version: '3.8'
 
 services:
   frontend:
-    container_name: trivia-frontend 
+    container_name: trivia-frontend
     build:
       context: ./frontend
       dockerfile: Dockerfile
     ports:
-      - "8081:8081"
+      - '8081:8081'
+    environment:
+      - VITE_ENABLE_ANALYTICS=true
     networks:
       - web
   backend:
     container_name: trivia-backend
     build:
-      context: ./backend    # Important: context is backend directory
+      context: ./backend # Important: context is backend directory
       dockerfile: Dockerfile
     ports:
-      - "3001:3001"
+      - '3001:3001'
     environment:
       - PORT=3001
       - OPENAI_API_KEY=${OPENAI_API_KEY}

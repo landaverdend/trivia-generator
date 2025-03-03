@@ -15,13 +15,13 @@ export async function generateTrivia(data: PostBody): Promise<TriviaResponse | T
   return result;
 }
 
-export const regenerateQuestion = async (topic: string, difficulty: string) => {
+export const regenerateQuestion = async (topic: string, difficulty: string, previousQuestion: string) => {
   const response = await fetch(`${API_URL}/api/regenerateQuestion`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify({ topic, difficulty }),
+    body: JSON.stringify({ topic: topic, difficulty: difficulty, previousQuestion: previousQuestion }),
   });
 
   if (!response.ok) {

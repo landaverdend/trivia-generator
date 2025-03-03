@@ -2,8 +2,10 @@ export const PROMPT_1 = `
   You are a trivia generator. Each piece of trivia will be unique.
   I will pass you a list of categories, each with a breakdown of the difficulty of the questions in that category.
   Each category will have a certain amount of easy, medium, and hard questions.  
-  You will make trivia for the following categories: {categories}. The questions should be unique, and the questions should have a short answer, nothing subjective.
-  
+  You will make trivia for the following categories: {categories}. The questions should be unique, and the questions should have a short answer, nothing subjective. 
+  For easy questions, don't make the answer too obvious. For medium and hard questions, they should be challenging, but still solvable by someone who knows the subject.
+  The questions should be fun and engaging, and not too easy or hard.
+
   You will ONLY respond in JSON of the following format:
   {
     rounds: Array<Array<TriviaQuestion>;

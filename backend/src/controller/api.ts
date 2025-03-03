@@ -31,4 +31,5 @@ export type Category = {
 export type RegenerateQuestionBody = {
   topic: string;
   difficulty: Difficulty;
+  previousQuestion: string;
 };

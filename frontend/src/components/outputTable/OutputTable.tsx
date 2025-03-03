@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { TriviaQuestion, TriviaResponse } from '../../types/api';
 import './output-table.css';
 import { buildPDF } from './pdfExporter';
@@ -20,27 +20,31 @@ type OTProps = {
 function OutputTable({ round, roundIndex, selectedQuestions, onQuestionSelect, onUpdateQuestion }: OTProps) {
   const [isReloading, setIsReloading] = useState<ReloadingState>({ isReloading: false, index: 0 });
 
-  const handleRegenQuestion = async ({ topic, difficulty }: TriviaQuestion, index: number) => {
+  useEffect(() => {
+    console.log(selectedQuestions);
+  }, [selectedQuestions]);
+
+  const handleRegenQuestion = async ({ topic, difficulty, question }: TriviaQuestion, index: number) => {
     if (isReloading.isReloading) return;
 
     setIsReloading({ isReloading: true, index });
-
-    for (let attempt = 0; attempt < 3; attempt++) {
+    let success = false;
+    for (let attempt = 0; attempt < 3 && !success; attempt++) {
       try {
-        const newQuestion = await regenerateQuestion(topic as string, difficulty);
+        const newQuestion = await regenerateQuestion(topic as string, difficulty, question);
         onUpdateQuestion(roundIndex, index, {
           ...newQuestion,
           topic,
           difficulty,
         });
+        success = true;
       } catch (err) {
         await new Promise((resolve) => setTimeout(resolve, 1000));
+        alert('Failed to reload question after multiple attempts');
       } finally {
         setIsReloading({ isReloading: false, index: 0 });
       }
     }
-
-    alert('Failed to reload question after multiple attempts');
   };
 
   return (

@@ -91,13 +91,16 @@ app.post('/api/generateTrivia', async (req: Request<{}, {}, PostBody>, res: Resp
 });
 
 app.post('/api/regenerateQuestion', async (req: Request, res: Response) => {
-  const { topic, difficulty } = req.body;
+  const { topic, difficulty, previousQuestion } = req.body;
 
   if (!topic || !difficulty) {
     return res.status(400).json({ error: 'Missing topic or difficulty' });
   }
 
-  const prompt = `Generate a single trivia question about ${topic} with ${difficulty} difficulty. Return it in this JSON format:
+  const prompt = `Generate a single trivia question about ${topic} with ${difficulty} difficulty. The question should be different from the previous question: ${previousQuestion}.
+  Easy questions should be easy to answer but not too obvious. Medium and hard questions should be challenging, but still solvable by someone who knows the subject.
+  
+  Return it in this JSON format:
   {
     "question": "the question text",
     "answer": "the answer text"

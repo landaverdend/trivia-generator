@@ -15,7 +15,7 @@ export function buildPDF(result: Map<string, TriviaQuestion[]>, selectedQuestion
 
   let roundIndex = 0;
   // Process each round
-  for (const [key, round] of result.entries()) {
+  for (const [, round] of result.entries()) {
     // Check if we need a new page
     if (yPosition > pdf.internal.pageSize.height - margin) {
       pdf.addPage();

@@ -16,7 +16,7 @@ export type TriviaQuestion = {
 };
 
 export type TriviaResponse = {
-  rounds: Array<Array<TriviaQuestion>>;
+  rounds: Map<string, Array<TriviaQuestion>>;
 };
 
 export type TriviaError = { error: string };

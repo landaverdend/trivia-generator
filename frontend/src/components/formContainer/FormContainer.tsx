@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import './form-container.css';
-import { generateTrivia } from '../../api/api';
+import { generateTrivia, streamGenerateTrivia } from '../../api/api';
 import { OutputContainer } from '../outputTable/OutputTable';
-import { TriviaResponse, Category, Difficulty } from '../../types/api';
+import { TriviaResponse, Category, Difficulty, TriviaQuestion } from '../../types/api';
 
 type LSProps = {
   color?: string;
@@ -100,7 +100,7 @@ export default function FormContainer() {
       difficulties: { easy: 0, medium: 0, hard: 0 },
     },
   ]);
-  const [result, setResult] = useState<TriviaResponse>({ rounds: [] });
+  const [result, setResult] = useState<Map<string, TriviaQuestion[]>>(new Map());
   const [isLoading, setIsLoading] = useState(false);
 
   const handleCategoryChange = (index: number, category: Category) => {
@@ -133,21 +133,45 @@ export default function FormContainer() {
 
     setIsLoading(true);
 
-    try {
-      const response = await generateTrivia({
-        categories,
-      });
+    // Clear previous results before starting
+    setResult(new Map());
 
-      if ('error' in response) {
-        alert(response.error);
-      } else {
-        setResult(response);
+    try {
+      // Build a map of questions[] by topic.
+      for await (const question of streamGenerateTrivia({ categories })) {
+        setResult((prevMap) => {
+          const newMap = new Map(prevMap);
+          const key = question.topic as string;
+          const existingQuestions = newMap.get(key) || [];
+
+          newMap.set(key, [...existingQuestions, question]);
+          return newMap;
+        });
       }
     } catch (error) {
+      console.error('Error generating trivia:', error);
       alert('There was an error generating trivia.');
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const updateResult = (topic: string, oldQuestion: string, newQuestion: TriviaQuestion) => {
+    setResult((prevMap) => {
+      const newMap = new Map(prevMap);
+      const key = topic;
+      const existingQuestions = newMap.get(key) || [];
+
+      for (let i = 0; i < existingQuestions.length; i++) {
+        if (existingQuestions[i].question === oldQuestion) {
+          existingQuestions[i] = newQuestion;
+          break;
+        }
+      }
+
+      newMap.set(key, existingQuestions);
+      return newMap;
+    });
   };
 
   return (
@@ -174,7 +198,7 @@ export default function FormContainer() {
       </button>
 
       {isLoading && <LoadSpinner />}
-      {result.rounds.length > 0 && !isLoading && <OutputContainer result={result} />}
+      {result.size > 0 && <OutputContainer result={result} updateResult={updateResult} />}
     </div>
   );
 }

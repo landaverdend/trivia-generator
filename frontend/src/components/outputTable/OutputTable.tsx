@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { TriviaQuestion, TriviaResponse } from '../../types/api';
+import { TriviaQuestion } from '../../types/api';
 import './output-table.css';
 import { buildPDF } from './pdfExporter';
 import { regenerateQuestion } from '../../api/api';
@@ -14,25 +14,22 @@ type OTProps = {
   roundIndex: number;
   selectedQuestions: Set<string>;
   onQuestionSelect: (question: string, isSelected: boolean) => void;
-  onUpdateQuestion: (roundIndex: number, questionIndex: number, newQuestion: TriviaQuestion) => void;
+  onUpdateQuestion: (topic: string, oldQuestion: string, newQuestion: TriviaQuestion) => void;
 };
 
-function OutputTable({ round, roundIndex, selectedQuestions, onQuestionSelect, onUpdateQuestion }: OTProps) {
+function OutputTable({ round, selectedQuestions, onQuestionSelect, onUpdateQuestion }: OTProps) {
   const [isReloading, setIsReloading] = useState<ReloadingState>({ isReloading: false, index: 0 });
-
-  useEffect(() => {
-    console.log(selectedQuestions);
-  }, [selectedQuestions]);
 
   const handleRegenQuestion = async ({ topic, difficulty, question }: TriviaQuestion, index: number) => {
     if (isReloading.isReloading) return;
+    topic = topic as string;
 
     setIsReloading({ isReloading: true, index });
     let success = false;
     for (let attempt = 0; attempt < 3 && !success; attempt++) {
       try {
-        const newQuestion = await regenerateQuestion(topic as string, difficulty, question);
-        onUpdateQuestion(roundIndex, index, {
+        const newQuestion = await regenerateQuestion(topic, difficulty, question);
+        onUpdateQuestion(topic, question, {
           ...newQuestion,
           topic,
           difficulty,
@@ -88,11 +85,18 @@ function OutputTable({ round, roundIndex, selectedQuestions, onQuestionSelect, o
   );
 }
 
-type OCProps = { result: TriviaResponse };
-export function OutputContainer({ result }: OCProps) {
-  const [rounds, setRounds] = useState(result.rounds);
+type OCProps = {
+  result: Map<string, TriviaQuestion[]>;
+  // The function that updates the result map in the parent component.
+  updateResult: (topic: string, oldQuestionTopic: string, newQuestion: TriviaQuestion) => void;
+};
+export function OutputContainer({ result, updateResult }: OCProps) {
   const [selectedQuestions, setSelectedQuestions] = useState<Set<string>>(
-    new Set(rounds.flatMap((round) => round.map((q) => q.question)))
+    new Set(
+      Array.from(result.values())
+        .flat()
+        .flatMap((el) => el.question)
+    )
   );
 
   const handleQuestionSelect = (question: string, isSelected: boolean) => {
@@ -108,34 +112,30 @@ export function OutputContainer({ result }: OCProps) {
   };
 
   const handleExportToPDF = () => {
-    buildPDF(rounds, selectedQuestions);
+    // buildPDF(rounds, selectedQuestions);
   };
 
-  const updateQuestion = (roundIndex: number, questionIndex: number, newQuestion: TriviaQuestion) => {
-    setRounds((prevRounds) => {
-      const newRounds = [...prevRounds];
-      newRounds[roundIndex] = [...newRounds[roundIndex]];
-      newRounds[roundIndex][questionIndex] = newQuestion;
-      return newRounds;
-    });
-  };
+  let tableArray = [];
+  let i = 0;
+  for (const key of result.keys()) {
+    tableArray.push(
+      <OutputTable
+        key={key}
+        round={result.get(key) as TriviaQuestion[]}
+        roundIndex={i}
+        selectedQuestions={selectedQuestions}
+        onQuestionSelect={handleQuestionSelect}
+        onUpdateQuestion={updateResult}
+      />
+    );
+  }
 
   return (
     <div className="output-container">
       <button onClick={handleExportToPDF} className="export-button">
-        Export to PDF ↓
+        ↓ Export to PDF ↓
       </button>
-
-      {rounds.map((round, index) => (
-        <OutputTable
-          key={index}
-          round={round}
-          roundIndex={index}
-          selectedQuestions={selectedQuestions}
-          onQuestionSelect={handleQuestionSelect}
-          onUpdateQuestion={updateQuestion}
-        />
-      ))}
+      {tableArray}
     </div>
   );
 }

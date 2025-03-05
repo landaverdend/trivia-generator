@@ -1,7 +1,7 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { TriviaQuestion } from '../../types/api';
 import './output-table.css';
-import { buildPDF } from './pdfExporter';
+// import { buildPDF } from './pdfExporter';
 import { regenerateQuestion } from '../../api/api';
 
 type ReloadingState = {

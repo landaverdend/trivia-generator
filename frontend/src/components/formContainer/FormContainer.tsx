@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import './form-container.css';
-import { generateTrivia, streamGenerateTrivia } from '../../api/api';
+import { streamGenerateTrivia } from '../../api/api';
 import { OutputContainer } from '../outputTable/OutputTable';
-import { TriviaResponse, Category, Difficulty, TriviaQuestion } from '../../types/api';
+import { Category, Difficulty, TriviaQuestion } from '../../types/api';
 
 type LSProps = {
   color?: string;

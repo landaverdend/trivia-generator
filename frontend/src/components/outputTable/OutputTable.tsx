@@ -123,7 +123,7 @@ export function OutputContainer({ result }: OCProps) {
   return (
     <div className="output-container">
       <button onClick={handleExportToPDF} className="export-button">
-        Export to PDF
+        Export to PDF ↓
       </button>
 
       {rounds.map((round, index) => (

@@ -4,7 +4,6 @@
   align-items: center;
   justify-content: center;
 
-  color: black;
   gap: 15px;
 }
 
@@ -23,14 +22,20 @@
 }
 
 .trivia-output-table tbody tr {
-  border-bottom: 1px solid #d3d3d3;
+  border-bottom: 1px solid #b3b3b3;
 }
 
-.trivia-output-table th,
+.trivia-output-table th {
+  color: #eee;
+  padding: 10px;
+  text-align: center;
+}
+
 .trivia-output-table td {
   max-width: clamp(200px, 20vw, 500px);
   padding: 10px;
   border: 1px solid #d3d3d3;
+  color: black;
   text-align: center;
 }
 .trivia-output-table .checkbox-cell {
@@ -50,7 +55,7 @@
 }
 
 .export-button {
-  background-color: #1a73e8;
+  background-color: #207521;
   color: white;
   border: none;
 

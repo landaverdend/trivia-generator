@@ -68,7 +68,7 @@ function CategoryCard({
         onChange={(e) => onChange({ ...category, topic: e.target.value })}
       />
       <div className="difficulty-selector-container">
-        {(['easy', 'medium', 'hard'] as Difficulty[]).map((difficulty) => (
+        {(['🟢 easy', '🟡 medium', '🔴 hard'] as Difficulty[]).map((difficulty) => (
           <DifficultyInput
             key={difficulty}
             label={difficulty}
@@ -183,7 +183,7 @@ export default function FormContainer() {
 
   return (
     <div className="page-container">
-      <h1>AI Trivia Generator</h1>
+      <h1>🧠 AI Trivia Generator 🧠</h1>
       <p>Generate trivia for your next event! No more than 15 questions per round.</p>
 
       <div className="form-container">

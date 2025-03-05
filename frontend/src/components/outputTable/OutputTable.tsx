@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { TriviaQuestion } from '../../types/api';
 import './output-table.css';
-// import { buildPDF } from './pdfExporter';
+import { buildPDF } from './pdfExporter';
 import { regenerateQuestion } from '../../api/api';
 
 type ReloadingState = {
@@ -112,7 +112,7 @@ export function OutputContainer({ result, updateResult }: OCProps) {
   };
 
   const handleExportToPDF = () => {
-    // buildPDF(rounds, selectedQuestions);
+    buildPDF(result, selectedQuestions);
   };
 
   let tableArray = [];

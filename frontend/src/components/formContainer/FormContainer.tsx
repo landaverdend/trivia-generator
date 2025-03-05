@@ -86,9 +86,16 @@ function CategoryCard({
             onChange({ ...category, additionalInfo: e.target.value });
           }}></textarea>
       </div>
-      <span className="action" onClick={isLast ? onAdd : onRemove}>
-        {isLast ? '+' : '-'}
-      </span>
+      {isLast && (
+        <span className="plus" onClick={onAdd}>
+          +
+        </span>
+      )}
+      {!isLast && (
+        <span className="minus" onClick={onRemove}>
+          -
+        </span>
+      )}
     </div>
   );
 }

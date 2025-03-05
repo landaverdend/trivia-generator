@@ -57,11 +57,26 @@ body {
     width: clamp(100px, 10vw, 200px);
   }
 
-  .action {
+  .minus,
+  .plus {
+    -webkit-user-select: none; /* Safari */
+    -moz-user-select: none; /* Firefox */
+    -ms-user-select: none; /* IE10+/Edge */
+    user-select: none; /* Standard */
+  }
+  
+  .minus {
     font-size: 3rem;
+    color: red;
   }
 
-  .action:hover {
+  .plus {
+    font-size: 1.75rem;
+    color: green;
+  }
+
+  .minus:hover,
+  .plus:hover {
     cursor: pointer;
     opacity: 0.5;
   }

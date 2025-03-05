@@ -18,7 +18,7 @@ function DifficultyInput({
   value,
   onChange,
 }: {
-  label: string;
+  label: Difficulty;
   value: number;
   max: number;
   onChange: (value: number) => void;
@@ -32,6 +32,9 @@ function DifficultyInput({
           </option>
         ))}
       </select>
+      {label === 'easy' && '🟢 '}
+      {label === 'medium' && '🟡 '}
+      {label === 'hard' && '🔴 '}
       {label} questions
     </span>
   );
@@ -68,7 +71,7 @@ function CategoryCard({
         onChange={(e) => onChange({ ...category, topic: e.target.value })}
       />
       <div className="difficulty-selector-container">
-        {(['🟢 easy', '🟡 medium', '🔴 hard'] as Difficulty[]).map((difficulty) => (
+        {(['easy', 'medium', 'hard'] as Difficulty[]).map((difficulty) => (
           <DifficultyInput
             key={difficulty}
             label={difficulty}

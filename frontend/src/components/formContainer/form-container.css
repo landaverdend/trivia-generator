@@ -1,3 +1,8 @@
+body {
+  background-color: #191919;
+  color: #eee;
+}
+
 .page-container {
   display: flex;
   flex-direction: column;
@@ -7,6 +12,10 @@
   gap: 25px;
 
   font-family: Arial, Helvetica, sans-serif;
+
+  h1 {
+    color: #b4b4b4;
+  }
 }
 
 .form-container {
@@ -27,8 +36,10 @@
 .card-container {
   display: flex;
   flex-direction: row;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
+  flex-wrap: wrap;
+
   gap: 20px;
   padding: 10px;
 
@@ -43,15 +54,31 @@
     height: clamp(20px, 3vh, 50px);
     border: 1px solid white;
     border-radius: 5px;
+    width: clamp(100px, 10vw, 200px);
   }
 
   .action {
-    font-size: 2.5rem;
+    font-size: 3rem;
   }
 
   .action:hover {
     cursor: pointer;
     opacity: 0.5;
+  }
+
+  .additional-info-container {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    justify-content: center;
+    gap: 10px;
+
+    textarea {
+      padding: 5px;
+      border: 1px solid white;
+      border-radius: 5px;
+      font-family: Arial, Helvetica, sans-serif;
+    }
   }
 }
 
@@ -94,8 +121,8 @@
   font-size: clamp(1rem, 1.5vw, 1.5rem);
   border: 1px solid black;
   border-radius: 5px;
-  background-color: #211ae8;
-  color: white;
+  background-color: #1379f3;
+  color: #eee;
   padding: 10px;
 }
 

@@ -26,6 +26,7 @@ export type Category = {
     medium: number;
     hard: number;
   };
+  additionalInfo?: string;
 };
 
 export type RegenerateQuestionBody = {

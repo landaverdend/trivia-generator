@@ -3,7 +3,7 @@ import { Request, Response } from 'express';
 import OpenAI from 'openai';
 import dotenv from 'dotenv';
 import cors from 'cors';
-import { PROMPT_1 } from './prompt';
+import { PROMPT_1, REGENERATE_PROMPT } from './prompt';
 import { TriviaResponse, PostBody, ErrorResponse, Category } from './api';
 
 dotenv.config();
@@ -37,7 +37,8 @@ const MAX_TOKENS_BULK = 4000; // For generating multiple questions
 
 function serializeCategory(category: Category): string {
   const { easy, medium, hard } = category.difficulties;
-  return `{The topic of ${category.topic} should have ${easy} easy, ${medium} medium, and ${hard} hard questions}`;
+  const notesText = category.additionalInfo ? ` with these specific notes: ${category.additionalInfo}` : '';
+  return `{The topic of ${category.topic} should have ${easy} easy, ${medium} medium, and ${hard} hard questions, with the following additional info as inputted by the user: ${notesText}}`;
 }
 
 app.post('/api/generateTrivia', async (req: Request<{}, {}, PostBody>, res: Response<TriviaResponse | ErrorResponse>) => {
@@ -97,15 +98,12 @@ app.post('/api/regenerateQuestion', async (req: Request, res: Response) => {
     return res.status(400).json({ error: 'Missing topic or difficulty' });
   }
 
-  const prompt = `Generate a single trivia question about ${topic} with ${difficulty} difficulty. The question should be different from the previous question: ${previousQuestion}.
-  Easy questions should be easy to answer but not too obvious. Medium and hard questions should be challenging, but still solvable by someone who knows the subject.
-  
-  Return it in this JSON format:
-  {
-    "question": "the question text",
-    "answer": "the answer text"
-  }`;
+  const prompt = REGENERATE_PROMPT.replace('{topic}', topic)
+    .replace('{difficulty}', difficulty)
+    .replace('{previousQuestion}', previousQuestion);
 
+  console.log(prompt);
+  
   let attempts = 0;
   while (attempts < MAX_RETRIES) {
     try {

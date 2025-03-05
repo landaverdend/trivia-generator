@@ -78,6 +78,14 @@ function CategoryCard({
           />
         ))}
       </div>
+      <div className="additional-info-container">
+        <textarea
+          placeholder="Additional notes for prompt..."
+          value={category.additionalInfo}
+          onChange={(e) => {
+            onChange({ ...category, additionalInfo: e.target.value });
+          }}></textarea>
+      </div>
       <span className="action" onClick={isLast ? onAdd : onRemove}>
         {isLast ? '+' : '-'}
       </span>
@@ -144,7 +152,8 @@ export default function FormContainer() {
 
   return (
     <div className="page-container">
-      <h1>Trivia Generator</h1>
+      <h1>AI Trivia Generator</h1>
+      <p>Generate trivia for your next event! No more than 15 questions per round.</p>
 
       <div className="form-container">
         {categories.map((category, i) => (

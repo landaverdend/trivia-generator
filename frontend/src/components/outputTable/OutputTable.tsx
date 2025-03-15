@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { TriviaQuestion } from '../../types/api';
 import './output-table.css';
 import { buildPDF } from './pdfExporter';
@@ -91,13 +91,15 @@ type OCProps = {
   updateResult: (topic: string, oldQuestionTopic: string, newQuestion: TriviaQuestion) => void;
 };
 export function OutputContainer({ result, updateResult }: OCProps) {
-  const [selectedQuestions, setSelectedQuestions] = useState<Set<string>>(
-    new Set(
+  const [selectedQuestions, setSelectedQuestions] = useState<Set<string>>(new Set());
+
+  useEffect(() => {
+    setSelectedQuestions(new Set(
       Array.from(result.values())
         .flat()
-        .flatMap((el) => el.question)
-    )
-  );
+        .map(question => question.question)
+    ));
+  }, [result]);
 
   const handleQuestionSelect = (question: string, isSelected: boolean) => {
     setSelectedQuestions((prev) => {

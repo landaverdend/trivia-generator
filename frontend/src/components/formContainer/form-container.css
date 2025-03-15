@@ -15,6 +15,7 @@ body {
 
   h1 {
     color: #b4b4b4;
+    font-size: clamp(1.5rem, 2vw, 2rem);
   }
 }
 
@@ -64,7 +65,7 @@ body {
     -ms-user-select: none; /* IE10+/Edge */
     user-select: none; /* Standard */
   }
-  
+
   .minus {
     font-size: 3rem;
     color: red;

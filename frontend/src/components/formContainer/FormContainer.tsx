@@ -3,6 +3,7 @@ import './form-container.css';
 import { streamGenerateTrivia } from '../../api/api';
 import { OutputContainer } from '../outputTable/OutputTable';
 import { Category, Difficulty, TriviaQuestion } from '../../types/api';
+import FeedbackForm from '../feedbackForm/FeedbackForm';
 
 type LSProps = {
   color?: string;
@@ -209,6 +210,8 @@ export default function FormContainer() {
 
       {isLoading && <LoadSpinner />}
       {result.size > 0 && <OutputContainer result={result} updateResult={updateResult} />}
+
+      <FeedbackForm />
     </div>
   );
 }
